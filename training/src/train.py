@@ -89,6 +89,9 @@ def main(argv=None):
 
     gpus_index = params['visible_devices'].split(",")
     params['gpus'] = len(gpus_index)
+    if len(gpus_index) == 1 and gpus_index[0].lower() == 'cpu':
+        params['gpus'] = 1
+        params['cpu'] = True
 
     if not os.path.exists(params['modelpath']):
         os.makedirs(params['modelpath'])
@@ -118,13 +121,38 @@ def main(argv=None):
         reuse_variable = False
 
         # multiple gpus
-        for i in range(params['gpus']):
-            with tf.device("/gpu:%d" % i):
-                with tf.name_scope("GPU_%d" % i):
-                    loss, last_heat_loss, pred_heat = get_loss_and_output(params['model'], params['batchsize'], input_image, input_heat, reuse_variable)
+        if 'cpu' in params and params['cpu'] == True:
+            # multiple gpus
+
+            with tf.device("/cpu:0"):
+                with tf.name_scope("CPU_0"):
+                    loss, last_heat_loss, pred_heat = get_loss_and_output(params['model'], params['batchsize'],
+                                                                          input_image, input_heat, reuse_variable)
                     reuse_variable = True
                     grads = opt.compute_gradients(loss)
                     tower_grads.append(grads)
+
+                    # valid_loss, valid_last_heat_loss, valid_pred_heat = get_loss_and_output(params['model'],
+                    #                                                                         params['batchsize'],
+                    #                                                                         valid_input_image,
+                    #                                                                         valid_input_heat,
+                    #                                                                         reuse_variable)
+        else:
+            # multiple gpus
+            for i in range(params['gpus']):
+                with tf.device("/gpu:%d" % i):
+                    with tf.name_scope("GPU_%d" % i):
+                        loss, last_heat_loss, pred_heat = get_loss_and_output(params['model'], params['batchsize'],
+                                                                              input_image, input_heat, reuse_variable)
+                        reuse_variable = True
+                        grads = opt.compute_gradients(loss)
+                        tower_grads.append(grads)
+
+                        # valid_loss, valid_last_heat_loss, valid_pred_heat = get_loss_and_output(params['model'],
+                        #                                                                         params['batchsize'],
+                        #                                                                         valid_input_image,
+                        #                                                                         valid_input_heat,
+                        #                                                                         reuse_variable)
 
         grads = average_gradients(tower_grads)
         for grad, var in grads:
