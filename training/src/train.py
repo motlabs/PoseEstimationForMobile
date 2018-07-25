@@ -90,10 +90,23 @@ def main(argv=None):
     gpus_index = params['visible_devices'].split(",")
     params['gpus'] = len(gpus_index)
 
+
     if not os.path.exists(params['modelpath']):
         os.makedirs(params['modelpath'])
-    if not os.path.exists(params['logpath']):
-        os.makedirs(params['logpath'])
+
+
+    # if not os.path.exists(params['logpath']):
+    #     os.makedirs(params['logpath'])
+
+
+    ## ckpt dir create
+    now = datetime.utcnow().strftime("%Y%m%d%H%M%S")
+    curr_model_dir      = "{}/run-{}/".format(params['modelpath'], now)
+    curr_tflog_dir      = curr_model_dir
+
+
+    if not tf.gfile.Exists(curr_model_dir):
+        tf.gfile.MakeDirs(curr_model_dir)
 
     dataset.set_config(params)
     set_network_input_wh(params['input_width'], params['input_height'])
@@ -164,7 +177,10 @@ def main(argv=None):
             coord = tf.train.Coordinator()
             threads = tf.train.start_queue_runners(sess=sess, coord=coord)
 
-            summary_writer = tf.summary.FileWriter(os.path.join(params['logpath'], training_name), sess.graph)
+            # summary_writer = tf.summary.FileWriter(os.path.join(params['logpath'], training_name), sess.graph)
+            summary_writer = tf.summary.FileWriter(os.path.join(curr_tflog_dir, training_name), sess.graph)
+
+
             total_step_num = params['num_train_samples'] * params['max_epoch'] // (params['batchsize'] * params['gpus'])
             print("Start training...")
             for step in range(total_step_num):
@@ -210,7 +226,9 @@ def main(argv=None):
 
                 # save model
                 if step % params['per_saved_model_step'] == 0:
-                    checkpoint_path = os.path.join(params['modelpath'], training_name, 'model')
+                    # checkpoint_path = os.path.join(params['modelpath'], training_name, 'model')
+                    checkpoint_path = os.path.join(curr_model_dir, training_name, 'model')
+
                     saver.save(sess, checkpoint_path, global_step=step)
             coord.request_stop()
             coord.join(threads)
