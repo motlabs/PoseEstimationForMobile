@@ -143,7 +143,7 @@ def main(argv=None):
                                                                           input_image, input_heat, reuse_variable)
 
                     # weight init from ckpt
-                    init_ckpt_path = params['ckptpath'] + params['modelpath']
+                    init_ckpt_path = params['ckptpath'] + params['init_ckpt_filename']
                     print ('checkpoint from the lastest data =%s'% params['checkpoint'])
                     if params['checkpoint']:
                         print('[main] ckpt loading from %s' % init_ckpt_path)
