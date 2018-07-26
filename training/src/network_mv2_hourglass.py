@@ -86,6 +86,7 @@ def build_network(input, trainable):
     net_h_w = int(net.shape[1])
     # build network recursively
     hg_out = hourglass_module(net, STAGE_NUM)
+    hg_out = hourglass_module(hg_out, STAGE_NUM)
 
     for index, l2 in enumerate(l2s):
         l2_w_h = int(l2.shape[1])
