@@ -146,8 +146,8 @@ def main(argv=None):
                     init_ckpt_path = params['ckptpath'] + params['modelpath']
                     if params['checkpoint']:
                         tf.logging.info('[main] ckpt loading from %s' % init_ckpt_path)
-                        tf.train.init_from_checkpoint(ckpt_dir_or_file=init_ckpt_path,
-                                                      assignment_map={"model/": "model/"})
+                        tf.train.latest_checkpoint(ckpt_dir_or_file=init_ckpt_path)
+                        tf.logging.info('[main] ckpt loading successful.')
 
                     reuse_variable = True
                     grads = opt.compute_gradients(loss)
