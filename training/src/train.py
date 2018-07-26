@@ -141,6 +141,14 @@ def main(argv=None):
                 with tf.name_scope("CPU_0"):
                     loss, last_heat_loss, pred_heat = get_loss_and_output(params['model'], params['batchsize'],
                                                                           input_image, input_heat, reuse_variable)
+
+                    # weight init from ckpt
+                    init_ckpt_path = params['ckptpath'] + params['modelpath']
+                    if params['checkpoint']:
+                        tf.logging.info('[main] ckpt loading from %s' % init_ckpt_path)
+                        tf.train.init_from_checkpoint(ckpt_dir_or_file=init_ckpt_path,
+                                                      assignment_map={"model/": "model/"})
+
                     reuse_variable = True
                     grads = opt.compute_gradients(loss)
                     tower_grads.append(grads)
