@@ -154,6 +154,7 @@ def main(argv=None):
                     grads = opt.compute_gradients(loss)
                     tower_grads.append(grads)
 
+
                     # valid_loss, valid_last_heat_loss, valid_pred_heat = get_loss_and_output(params['model'],
                     #                                                                         params['batchsize'],
                     #                                                                         valid_input_image,
@@ -175,7 +176,14 @@ def main(argv=None):
                             tf.train.latest_checkpoint(checkpoint_dir=init_ckpt_path)
                             print('[main] ckpt loading successful.')
 
-
+                        # ---------------------------
+                        filename_pb = 'hgmodel.pb'
+                        savedir = os.getcwd() + '/export_pb'
+                        if not tf.gfile.Exists(savedir):
+                            tf.gfile.MakeDirs(savedir)
+                        with tf.Session() as sess:
+                            tf.train.write_graph(sess.graph_def, savedir, filename_pb, as_text=False)
+                        # ------------------------
                         reuse_variable = True
                         grads = opt.compute_gradients(loss)
                         tower_grads.append(grads)
@@ -220,6 +228,7 @@ def main(argv=None):
         config.gpu_options.allow_growth = True
         with tf.Session(config=config) as sess:
             init.run()
+
 
             coord = tf.train.Coordinator()
             threads = tf.train.start_queue_runners(sess=sess, coord=coord)
