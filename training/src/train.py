@@ -177,12 +177,12 @@ def main(argv=None):
                             print('[main] ckpt loading successful.')
 
                         # ---------------------------
-                        filename_pb = 'hgmodel.pb'
+                        filename_pb = 'hgmodel.pbtxt'
                         savedir = os.getcwd() + '/export_pb'
                         if not tf.gfile.Exists(savedir):
                             tf.gfile.MakeDirs(savedir)
                         with tf.Session() as sess:
-                            tf.train.write_graph(sess.graph_def, savedir, filename_pb, as_text=False)
+                            tf.train.write_graph(sess.graph_def, savedir, filename_pb, as_text=True)
                         # ------------------------
                         reuse_variable = True
                         grads = opt.compute_gradients(loss)
