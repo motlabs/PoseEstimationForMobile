@@ -144,6 +144,7 @@ def main(argv=None):
 
                     # weight init from ckpt
                     init_ckpt_path = params['ckptpath'] + params['modelpath']
+                    print ('checkpoint from the lastest data =%s', params['checkpoint'])
                     if params['checkpoint']:
                         tf.logging.info('[main] ckpt loading from %s' % init_ckpt_path)
                         tf.train.latest_checkpoint(checkpoint_dir=init_ckpt_path)
@@ -168,6 +169,7 @@ def main(argv=None):
 
                         # weight init from ckpt
                         init_ckpt_path = params['ckptpath'] + params['modelpath']
+                        print ('checkpoint from the lastest data =%s',params['checkpoint'])
                         if params['checkpoint']:
                             tf.logging.info('[main] ckpt loading from %s' % init_ckpt_path)
                             tf.train.latest_checkpoint(checkpoint_dir=init_ckpt_path)
