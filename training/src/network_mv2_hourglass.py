@@ -88,11 +88,11 @@ def build_network(input, trainable):
     # skip_connection = net
     # build network recursively
 
-    with tf.variable_scope(name_or_scope='hg_module1',values=[net]):
-        hg_out = hourglass_module(net, STAGE_NUM)
+    # with tf.variable_scope(name_or_scope='hg_module1',values=[net]):
+    hg_out = hourglass_module(net, STAGE_NUM)
 
-    with tf.variable_scope(name_or_scope='hg_module2',values=[hg_out]):
-        hg_out = hourglass_module(hg_out, STAGE_NUM)
+    # with tf.variable_scope(name_or_scope='hg_module2',values=[hg_out]):
+    #     hg_out = hourglass_module(hg_out, STAGE_NUM)
 
     # hg_out = tf.add(skip_connection,hg_out)
 
