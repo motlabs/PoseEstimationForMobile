@@ -85,7 +85,12 @@ def build_network(input, trainable):
 
     net_h_w = int(net.shape[1])
     # build network recursively
-    hg_out = hourglass_module(net, STAGE_NUM)
+    with tf.variable_scope(name_or_scope='hg_module1',values=[net]):
+        hg_out = hourglass_module(net, STAGE_NUM)
+
+    with tf.variable_scope(name_or_scope='hg_module2',values=[hg_out]):
+        hg_out = hourglass_module(hg_out, STAGE_NUM)
+
 
     for index, l2 in enumerate(l2s):
         l2_w_h = int(l2.shape[1])
