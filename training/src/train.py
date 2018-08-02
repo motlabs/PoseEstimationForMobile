@@ -74,6 +74,7 @@ def average_gradients(tower_grads):
     return average_grads
 
 
+
 def main(argv=None):
     # load config file and setup
     params = {}
@@ -135,7 +136,6 @@ def main(argv=None):
 
         # multiple gpus
         if 'cpu' in params and params['cpu'] == True:
-            # multiple gpus
 
             with tf.device("/cpu:0"):
                 with tf.name_scope("CPU_0"):

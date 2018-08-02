@@ -147,11 +147,13 @@ def pose_flip(meta):
 
 
 def pose_resize_shortestedge_random(meta):
-    ratio_w = _network_w / meta.width
-    ratio_h = _network_h / meta.height
+    ratio_w = float(_network_w) / float(meta.width)
+    ratio_h = float(_network_h) / float(meta.height)
     ratio = min(ratio_w, ratio_h)
+
     target_size = int(min(meta.width * ratio + 0.5, meta.height * ratio + 0.5))
     target_size = int(target_size * random.uniform(0.95, 1.2))
+
     # target_size = int(min(_network_w, _network_h) * random.uniform(0.7, 1.5))
     return pose_resize_shortestedge(meta, target_size)
 
@@ -181,7 +183,8 @@ def pose_resize_shortestedge(meta, target_size):
     img = meta.img
 
     # adjust image
-    scale = target_size / min(meta.height, meta.width)
+    scale = float(target_size) / float(min(meta.height, meta.width))
+
     if meta.height < meta.width:
         newh, neww = target_size, int(scale * meta.width + 0.5)
     else:

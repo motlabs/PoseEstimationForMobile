@@ -129,6 +129,7 @@ class CocoMetadata:
         return heatmap.astype(np.float16)
 
     @staticmethod
+    # the below function actually made functions
     def put_heatmap(heatmap, plane_idx, center, sigma):
         center_x, center_y = center
         _, height, width = heatmap.shape[:3]
